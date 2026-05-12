@@ -1,0 +1,16 @@
+{
+  "name": "@oriyn-ai/skills",
+  "version": "0.1.0",
+  "description": "Agent skills for working with Oriyn",
+  "type": "module",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oriyn-ai/skills.git"
+  },
+  "scripts": {
+    "build:agents": "node scripts/build-agents.cjs",
+    "validate": "node scripts/validate-skills.cjs",
+    "build": "npm run build:agents && npm run validate"
+  }
+}

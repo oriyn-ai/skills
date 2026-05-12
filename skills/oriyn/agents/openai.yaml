@@ -1,0 +1,4 @@
+interface:
+  display_name: "Oriyn"
+  short_description: "Validate product decisions with real personas"
+  default_prompt: "Use $oriyn to validate this product decision against grounded personas."
