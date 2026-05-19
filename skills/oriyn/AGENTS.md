@@ -1,24 +1,23 @@
 ---
 name: oriyn
-description: Use Oriyn to validate product decisions against grounded personas and real behavioral data. Use when a user is deciding whether to build, change, price, launch, or redesign a user-facing product experience; when a PR changes product behavior and needs user signal; when the user asks about their actual users, personas, or behavior patterns; or when an agent needs common Oriyn CLI workflows.
+description: Use Oriyn to inspect grounded personas and real behavior patterns for product decisions. Use when a user is deciding whether to build, change, price, launch, or redesign a user-facing product experience; when a PR changes product behavior and needs user signal; when the user asks about their actual users, personas, or behavior patterns; or when an agent needs common Oriyn CLI workflows.
 ---
 
 # Oriyn
 
-Use Oriyn to validate product decisions against grounded personas and real behavioral data. Use when a user is deciding whether to build, change, price, launch, or redesign a user-facing product experience; when a PR changes product behavior and needs user signal; when the user asks about their actual users, personas, or behavior patterns; or when an agent needs common Oriyn CLI workflows.
+Use Oriyn to inspect grounded personas and real behavior patterns for product decisions. Use when a user is deciding whether to build, change, price, launch, or redesign a user-facing product experience; when a PR changes product behavior and needs user signal; when the user asks about their actual users, personas, or behavior patterns; or when an agent needs common Oriyn CLI workflows.
 
 ## Table of Contents
 
 - [Core Instructions](#core-instructions)
 - [Setup and Auth](#setup-and-auth)
-- [Run Experiments](#run-experiments)
 - [Personas and Patterns](#personas-and-patterns)
 - [Present Results](#present-results)
 - [Troubleshooting](#troubleshooting)
 
 ## Core Instructions
 
-Oriyn helps product teams understand behavior, generate grounded personas, and run simulated experiments against persona-backed agents before shipping product changes.
+Oriyn helps product teams understand behavior, generate grounded personas, and inspect product patterns before shipping product changes.
 
 ## Operating Model
 
@@ -36,17 +35,17 @@ For a product decision:
 
 ```bash
 oriyn status
-oriyn experiments run "A clear, testable statement about one product change"
+oriyn patterns
+oriyn personas
 ```
 
-When stdout is piped, the CLI emits JSONL. Read the final `{"type":"result"}` event for the experiment payload, and summarize the verdict, convergence, persona breakdown, and any caveats.
+Use the output to identify affected personas, behavior patterns, segment size, and the strongest grounded signal. Summarize what the data suggests and where judgment or more product discovery is still needed.
 
 ## Workflow References
 
 - [Setup and auth](rules/setup-and-auth.md): Install the CLI, install this skill, authenticate, link a repo, and verify readiness.
-- [Run experiments](rules/run-experiments.md): Validate a specific product decision and interpret streaming JSONL results.
-- [Read personas and patterns](rules/personas-and-patterns.md): Inspect user groups, size estimates, behavioral traits, and mined hypotheses.
-- [Present results](rules/present-results.md): Report grounded verdicts without overstating confidence.
+- [Read personas and patterns](rules/personas-and-patterns.md): Inspect user groups, size estimates, behavioral traits, and mined product signals.
+- [Present results](rules/present-results.md): Report grounded product signal without overstating confidence.
 - [Troubleshooting](rules/troubleshooting.md): Handle auth, missing links, no data, API, and network failures.
 
 Read only the rule files needed for the user's task. Prefer the narrowest workflow that answers the question.
@@ -73,7 +72,6 @@ The CLI is how humans and agents interact with Oriyn:
 - `oriyn sync`
 - `oriyn personas`
 - `oriyn patterns`
-- `oriyn experiments run "..."`
 
 The skill is how agents know when and how to use those commands.
 
@@ -151,7 +149,7 @@ Run:
 oriyn status
 ```
 
-Use the status output to confirm auth, project link, API reachability, telemetry settings, and local paths before running experiments.
+Use the status output to confirm auth, project link, API reachability, telemetry settings, and local paths before relying on personas or patterns.
 
 If integrations or enrichment are not ready, run:
 
@@ -161,81 +159,15 @@ oriyn sync
 
 If no behavioral integrations are connected, direct the user to `https://app.oriyn.ai` -> Integrations before claiming results are grounded.
 
-## Run Experiments
-
-Impact: CRITICAL
-
-Validate a specific product decision with persona-grounded Oriyn experiments.
-
-## When to Run
-
-Run an experiment when the user is about to make a user-facing product decision and wants signal from real behavioral personas.
-
-Good hypotheses are:
-
-- Specific: "Show pricing before signup."
-- Testable: "Reduce checkout from three steps to one."
-- Scoped: One change at a time.
-
-Avoid broad prompts like "Improve onboarding" or bundled changes that make the verdict hard to interpret.
-
-## Command
-
-Run from a linked project directory:
-
-```bash
-oriyn experiments run "A clear, testable statement about one change"
-```
-
-For higher-stakes calls:
-
-```bash
-oriyn experiments run "A clear, testable statement about one change" --agents 100
-```
-
-## JSONL Behavior
-
-When stdout is piped, Oriyn emits JSONL by default. Do not add `--json` or `--wait` unless the CLI help in the installed version explicitly requires it.
-
-Typical events:
-
-```json
-{"type":"step","name":"create-experiment","ts":"..."}
-{"type":"progress","message":"status: running","ts":"..."}
-{"type":"result","data":{"summary":{"verdict":"ship","convergence":0.86}}}
-```
-
-Read the final `type=result` event. It contains the experiment payload, including status, summary, verdict, convergence, persona breakdown, and agent count.
-
-## Result Handling
-
-Always report:
-
-- Verdict: `ship`, `revise`, or `reject`.
-- Convergence: how consistent the persona-agent responses were.
-- Persona breakdown: named personas, adoption/support where available, reasoning, and objections.
-- Grounding: persona size estimates and behavioral traits when available.
-- Next action: ship, revise, segment, flag, or run a narrower follow-up.
-
-If an experiment is incomplete, failed, or timed out, say that directly and inspect it with:
-
-```bash
-oriyn experiments <experiment-id>
-```
-
-## Product Data Boundary
-
-Oriyn is grounded only when the linked product has behavioral data and persona enrichment. If `oriyn status` says data is missing or enrichment is not ready, run `oriyn sync` or ask the user to connect integrations before treating the verdict as grounded.
-
 ## Personas and Patterns
 
 Impact: HIGH
 
-Inspect grounded user segments, behavior traits, and mined product opportunities.
+Inspect grounded user segments, behavior traits, and product opportunities.
 
 ## Personas
 
-Use personas when the user asks who their actual users are, which segment a decision affects, or why a verdict differs across groups.
+Use personas when the user asks who their actual users are, which segment a decision affects, or how different groups may react to a product change.
 
 ```bash
 oriyn personas
@@ -246,8 +178,8 @@ Look for:
 
 - `size_estimate`: approximate share of the user base represented by the persona.
 - `behavioral_traits`: traits backed by real sessions or events.
-- Evidence or citations that explain why the trait is credible.
 - Dynamic facts that show current behavior, not only static demographics.
+- Stated goals, constraints, and adoption signals that clarify what the persona is trying to accomplish.
 
 When presenting persona data, make the difference between large and small segments explicit. A persona representing a large share of users should carry more product weight than a small edge segment.
 
@@ -261,7 +193,7 @@ oriyn patterns --only hypothesis
 oriyn patterns --only bottleneck
 ```
 
-Patterns can help choose hypotheses for experiments. Do not treat mined patterns as shipping decisions by themselves; use them to form testable experiment prompts.
+Patterns help identify likely opportunities, bottlenecks, and product hypotheses. Do not treat mined patterns as shipping decisions by themselves; use them to frame a clear decision or follow-up research question.
 
 ## Useful Sequence
 
@@ -270,8 +202,8 @@ For a vague product question:
 1. Run `oriyn status` to confirm the product is linked and enriched.
 2. Run `oriyn patterns` to find likely opportunities or bottlenecks.
 3. Run `oriyn personas` to understand the affected user groups.
-4. Convert the decision into one clear hypothesis.
-5. Run `oriyn experiments run "..."`.
+4. Convert the decision into one clear product hypothesis or research question.
+5. Present the grounded signal, affected segments, and practical next step.
 
 ## Do Not Synthesize Unsupported Personas
 
@@ -288,26 +220,26 @@ Summarize Oriyn output in a way that is useful, grounded, and not overstated.
 Keep the result short but grounded:
 
 ```markdown
-Verdict: revise (convergence 0.71)
+Signal: simplify setup before broad launch.
 
-The strongest support came from Habitual Automators, who already rely on shortcuts. Reluctant Evaluators pushed back because the change adds setup friction.
+Habitual Automators already rely on shortcuts and are the clearest fit for this workflow. Reluctant Evaluators are a larger group and show friction around setup-heavy changes.
 
-Persona breakdown:
-- Habitual Automator (22%): supports. Reason...
-- Reluctant Evaluator (34%): concerned. Reason...
-- Occasional Explorer (18%): neutral. Reason...
+Persona read:
+- Habitual Automator (22%): likely fit. Reason...
+- Reluctant Evaluator (34%): friction risk. Reason...
+- Occasional Explorer (18%): weak signal. Reason...
 
-Recommendation: ship only to the Automator segment first, or simplify the setup step and re-run the experiment.
+Recommendation: start with the Automator segment or remove one setup step before broad rollout.
 ```
 
 ## Required Elements
 
 Include:
 
-- The verdict and convergence.
 - Persona names and size estimates when available.
-- The main reason each important persona supported or opposed the change.
-- Caveats about missing data, low convergence, incomplete experiments, or unready enrichment.
+- Relevant behavior patterns or bottlenecks.
+- The main reason each important persona is a likely fit, friction risk, or weak signal.
+- Caveats about missing data, sparse signal, stale sync, or unready enrichment.
 - A concrete next step.
 
 ## Weighting
@@ -318,7 +250,7 @@ Do not flatten all personas into equal votes when `size_estimate` is available. 
 
 Avoid saying Oriyn "proves" a product decision. Prefer "signal", "suggests", "the grounded personas converged on", or "the best supported next step is".
 
-If the user needs a high-risk decision, recommend a narrower follow-up experiment, a feature flag, or a real-world rollout plan after the Oriyn result.
+If the user needs a high-risk decision, recommend narrowing the audience, adding a feature flag, or pairing the Oriyn read with a real-world rollout plan.
 
 ## Troubleshooting
 
@@ -374,13 +306,13 @@ oriyn status
 
 ## No Data or Not Ready
 
-If personas or experiments are not grounded because enrichment is not ready:
+If personas or patterns are not grounded because enrichment is not ready:
 
 ```bash
 oriyn sync
 ```
 
-If integrations are missing, tell the user to connect sources in the Oriyn app before relying on experiment verdicts.
+If integrations are missing, tell the user to connect sources in the Oriyn app before relying on grounded product signal.
 
 ## Network or API Failures
 
