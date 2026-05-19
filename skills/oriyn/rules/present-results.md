@@ -2,7 +2,7 @@
 title: Present Results
 impact: HIGH
 description: Summarize Oriyn output in a way that is useful, grounded, and not overstated.
-tags: [reporting, verdicts, personas]
+tags: [reporting, personas, patterns]
 ---
 
 # Present Results
@@ -12,26 +12,26 @@ tags: [reporting, verdicts, personas]
 Keep the result short but grounded:
 
 ```markdown
-Verdict: revise (convergence 0.71)
+Signal: simplify setup before broad launch.
 
-The strongest support came from Habitual Automators, who already rely on shortcuts. Reluctant Evaluators pushed back because the change adds setup friction.
+Habitual Automators already rely on shortcuts and are the clearest fit for this workflow. Reluctant Evaluators are a larger group and show friction around setup-heavy changes.
 
-Persona breakdown:
-- Habitual Automator (22%): supports. Reason...
-- Reluctant Evaluator (34%): concerned. Reason...
-- Occasional Explorer (18%): neutral. Reason...
+Persona read:
+- Habitual Automator (22%): likely fit. Reason...
+- Reluctant Evaluator (34%): friction risk. Reason...
+- Occasional Explorer (18%): weak signal. Reason...
 
-Recommendation: ship only to the Automator segment first, or simplify the setup step and re-run the experiment.
+Recommendation: start with the Automator segment or remove one setup step before broad rollout.
 ```
 
 ## Required Elements
 
 Include:
 
-- The verdict and convergence.
 - Persona names and size estimates when available.
-- The main reason each important persona supported or opposed the change.
-- Caveats about missing data, low convergence, incomplete experiments, or unready enrichment.
+- Relevant behavior patterns or bottlenecks.
+- The main reason each important persona is a likely fit, friction risk, or weak signal.
+- Caveats about missing data, sparse signal, stale sync, or unready enrichment.
 - A concrete next step.
 
 ## Weighting
@@ -42,4 +42,4 @@ Do not flatten all personas into equal votes when `size_estimate` is available. 
 
 Avoid saying Oriyn "proves" a product decision. Prefer "signal", "suggests", "the grounded personas converged on", or "the best supported next step is".
 
-If the user needs a high-risk decision, recommend a narrower follow-up experiment, a feature flag, or a real-world rollout plan after the Oriyn result.
+If the user needs a high-risk decision, recommend narrowing the audience, adding a feature flag, or pairing the Oriyn read with a real-world rollout plan.

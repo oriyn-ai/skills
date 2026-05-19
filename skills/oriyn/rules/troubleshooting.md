@@ -55,13 +55,13 @@ oriyn status
 
 ## No Data or Not Ready
 
-If personas or experiments are not grounded because enrichment is not ready:
+If personas or patterns are not grounded because enrichment is not ready:
 
 ```bash
 oriyn sync
 ```
 
-If integrations are missing, tell the user to connect sources in the Oriyn app before relying on experiment verdicts.
+If integrations are missing, tell the user to connect sources in the Oriyn app before relying on grounded product signal.
 
 ## Network or API Failures
 
