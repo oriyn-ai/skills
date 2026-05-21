@@ -1,23 +1,24 @@
 ---
 name: oriyn
-description: Use Oriyn to inspect grounded personas and real behavior patterns for product decisions. Use when a user is deciding whether to build, change, price, launch, or redesign a user-facing product experience; when a PR changes product behavior and needs user signal; when the user asks about their actual users, personas, or behavior patterns; or when an agent needs common Oriyn CLI workflows.
+description: Use Oriyn to validate product decisions against grounded personas, real behavior patterns, and persona-backed research modes. Use when a user is deciding whether to build, change, price, launch, or redesign a user-facing product experience; when a PR changes product behavior and needs user signal; when the user asks about their actual users, personas, research runs, or behavior patterns; or when an agent needs common Oriyn CLI workflows.
 ---
 
 # Oriyn
 
-Use Oriyn to inspect grounded personas and real behavior patterns for product decisions. Use when a user is deciding whether to build, change, price, launch, or redesign a user-facing product experience; when a PR changes product behavior and needs user signal; when the user asks about their actual users, personas, or behavior patterns; or when an agent needs common Oriyn CLI workflows.
+Use Oriyn to validate product decisions against grounded personas, real behavior patterns, and persona-backed research modes. Use when a user is deciding whether to build, change, price, launch, or redesign a user-facing product experience; when a PR changes product behavior and needs user signal; when the user asks about their actual users, personas, research runs, or behavior patterns; or when an agent needs common Oriyn CLI workflows.
 
 ## Table of Contents
 
 - [Core Instructions](#core-instructions)
 - [Setup and Auth](#setup-and-auth)
+- [Run Research Modes](#run-research-modes)
 - [Personas and Patterns](#personas-and-patterns)
 - [Present Results](#present-results)
 - [Troubleshooting](#troubleshooting)
 
 ## Core Instructions
 
-Oriyn helps product teams understand behavior, generate grounded personas, and inspect product patterns before shipping product changes.
+Oriyn helps product teams understand behavior, generate grounded personas, and run persona-backed research before shipping product changes.
 
 ## Operating Model
 
@@ -35,15 +36,22 @@ For a product decision:
 
 ```bash
 oriyn status
-oriyn patterns
-oriyn personas
+oriyn research modes
+oriyn research ab-test --question "Which onboarding offer is clearer?" --a "Free trial" --b "Freemium tier"
 ```
 
-Use the output to identify affected personas, behavior patterns, segment size, and the strongest grounded signal. Summarize what the data suggests and where judgment or more product discovery is still needed.
+For broader positioning convergence, use:
+
+```bash
+oriyn research experiment --question "Which positioning should we lead with?" --a "Save setup time" --b "Find revenue leaks" --agents 500
+```
+
+Use the output to identify the actual choice, rationale, convergence, affected personas, behavior patterns, segment size, and caveats.
 
 ## Workflow References
 
 - [Setup and auth](rules/setup-and-auth.md): Install the CLI, install this skill, authenticate, link a repo, and verify readiness.
+- [Run research modes](rules/run-research.md): Run A/B, Delphi, experiment, and playtest research from the CLI.
 - [Read personas and patterns](rules/personas-and-patterns.md): Inspect user groups, size estimates, behavioral traits, and mined product signals.
 - [Present results](rules/present-results.md): Report grounded product signal without overstating confidence.
 - [Troubleshooting](rules/troubleshooting.md): Handle auth, missing links, no data, API, and network failures.
@@ -56,6 +64,7 @@ Use Oriyn when the question has a product/user decision surface:
 
 - "Should we ship this onboarding change?"
 - "Would users pay for this plan?"
+- "Which positioning should we lead with?"
 - "Which personas care about this workflow?"
 - "This PR changes the trial flow; should we validate it?"
 - "What patterns are emerging in our actual product behavior?"
@@ -72,6 +81,11 @@ The CLI is how humans and agents interact with Oriyn:
 - `oriyn sync`
 - `oriyn personas`
 - `oriyn patterns`
+- `oriyn research modes`
+- `oriyn research ab-test`
+- `oriyn research delphi`
+- `oriyn research experiment`
+- `oriyn research playtest`
 
 The skill is how agents know when and how to use those commands.
 
@@ -149,7 +163,7 @@ Run:
 oriyn status
 ```
 
-Use the status output to confirm auth, project link, API reachability, telemetry settings, and local paths before relying on personas or patterns.
+Use the status output to confirm auth, project link, API reachability, telemetry settings, and local paths before relying on personas, patterns, or research runs.
 
 If integrations or enrichment are not ready, run:
 
@@ -158,6 +172,50 @@ oriyn sync
 ```
 
 If no behavioral integrations are connected, direct the user to `https://app.oriyn.ai` -> Integrations before claiming results are grounded.
+
+## Run Research Modes
+
+Impact: HIGH
+
+Run persona-backed A/B, Delphi, experiment, and playtest research from the CLI.
+
+## Choose the Right Mode
+
+Use `oriyn research modes` when you need to confirm the backend-supported modes for the linked product.
+
+Use `oriyn research ab-test` for a concrete two-option decision. The output should include a real choice, persona-grounded reasoning, and caveats.
+
+```bash
+oriyn research ab-test --question "Which onboarding offer is clearer?" --a "Free trial" --b "Freemium tier"
+```
+
+Use `oriyn research delphi` when the user needs multi-round reasoning across personas before converging on a recommendation.
+
+```bash
+oriyn research delphi --question "What launch risk should we address first?" --rounds 3
+```
+
+Use `oriyn research experiment` for positioning convergence across 100, 500, or 1000 simulated agents. The experiment mode uses the backend's configured lightweight model for the agent fanout and returns bucketed convergence.
+
+```bash
+oriyn research experiment --question "Which positioning should we lead with?" --a "Save setup time" --b "Find revenue leaks" --agents 500
+```
+
+Use `oriyn research playtest` for task-based evaluation of a URL. Keep the allowed domains tight.
+
+```bash
+oriyn research playtest --url "https://staging.example.com" --task "Create your first report" --allow-domain staging.example.com
+```
+
+## Output Handling
+
+The CLI polls until the research run reaches a terminal state. In a TTY, summarize the final printed result. When stdout is piped, read JSONL and use the final `{"type":"result"}` event as the source of truth.
+
+For `ab-test`, report the selected option and the reasoning. For `experiment`, report the winning bucket, convergence percentage, agent count, and notable objections. For `delphi`, report the final recommendation and where rounds converged or disagreed. For `playtest`, report task completion, friction points, and persona-specific findings.
+
+## Interview Boundary
+
+Interactive persona interviews are a chat surface in the Oriyn app, not a CLI research command. If the user wants to chat with a persona, open the linked product in the app with `oriyn open` and use the Interviews tab.
 
 ## Personas and Patterns
 
@@ -238,6 +296,8 @@ Include:
 
 - Persona names and size estimates when available.
 - Relevant behavior patterns or bottlenecks.
+- The selected option, recommendation, winning bucket, or task outcome for research runs.
+- Convergence, disagreement, objections, or sample rationales when a research run provides them.
 - The main reason each important persona is a likely fit, friction risk, or weak signal.
 - Caveats about missing data, sparse signal, stale sync, or unready enrichment.
 - A concrete next step.
@@ -306,7 +366,7 @@ oriyn status
 
 ## No Data or Not Ready
 
-If personas or patterns are not grounded because enrichment is not ready:
+If personas, patterns, or research participants are not grounded because enrichment is not ready:
 
 ```bash
 oriyn sync

@@ -2,7 +2,7 @@
 title: Present Results
 impact: HIGH
 description: Summarize Oriyn output in a way that is useful, grounded, and not overstated.
-tags: [reporting, personas, patterns]
+tags: [reporting, personas, patterns, research]
 ---
 
 # Present Results
@@ -30,6 +30,8 @@ Include:
 
 - Persona names and size estimates when available.
 - Relevant behavior patterns or bottlenecks.
+- The selected option, recommendation, winning bucket, or task outcome for research runs.
+- Convergence, disagreement, objections, or sample rationales when a research run provides them.
 - The main reason each important persona is a likely fit, friction risk, or weak signal.
 - Caveats about missing data, sparse signal, stale sync, or unready enrichment.
 - A concrete next step.

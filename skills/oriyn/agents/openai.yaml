@@ -1,4 +1,4 @@
 interface:
   display_name: "Oriyn"
-  short_description: "Inspect personas and behavior patterns"
-  default_prompt: "Use $oriyn to inspect grounded personas and behavior patterns for this product decision."
+  short_description: "Run persona-backed product research"
+  default_prompt: "Use $oriyn to validate this product decision with grounded personas, behavior patterns, and research modes."
