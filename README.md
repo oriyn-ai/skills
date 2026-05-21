@@ -28,6 +28,11 @@ The Oriyn CLI is how humans and agents interact with Oriyn:
 - `oriyn sync`
 - `oriyn personas`
 - `oriyn patterns`
+- `oriyn research modes`
+- `oriyn research ab-test`
+- `oriyn research delphi`
+- `oriyn research experiment`
+- `oriyn research playtest`
 
 This repository is how agents learn when and how to use those commands. Keep product workflow instructions, common agent operating patterns, and skill-specific documentation here.
 
@@ -41,6 +46,7 @@ skills/
     agents/openai.yaml
     rules/
       setup-and-auth.md
+      run-research.md
       personas-and-patterns.md
       present-results.md
       troubleshooting.md

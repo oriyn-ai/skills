@@ -75,7 +75,7 @@ Run:
 oriyn status
 ```
 
-Use the status output to confirm auth, project link, API reachability, telemetry settings, and local paths before relying on personas or patterns.
+Use the status output to confirm auth, project link, API reachability, telemetry settings, and local paths before relying on personas, patterns, or research runs.
 
 If integrations or enrichment are not ready, run:
 

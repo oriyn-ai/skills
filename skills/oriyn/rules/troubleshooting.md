@@ -55,7 +55,7 @@ oriyn status
 
 ## No Data or Not Ready
 
-If personas or patterns are not grounded because enrichment is not ready:
+If personas, patterns, or research participants are not grounded because enrichment is not ready:
 
 ```bash
 oriyn sync
