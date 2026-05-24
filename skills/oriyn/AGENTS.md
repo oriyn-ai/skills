@@ -24,10 +24,10 @@ Oriyn helps product teams understand behavior, generate grounded personas, and r
 
 Always run this loop end-to-end — don't stop after pushing.
 
-1. `git switch main && git pull --ff-only` to start from the latest `main`.
+1. `git switch main && git pull --ff-only origin main` to start from the latest `main`.
 2. Create a feature branch (`git switch -c <topic>/<short-slug>`).
 3. Make scoped changes.
-4. Run relevant local checks (`bun run check`, `bun run build`, plus any task-specific tests).
+4. Run relevant local checks for the touched repo (use its package manager's check/build commands plus any task-specific tests).
 5. Commit changes (stage explicit files, never `git add -A`).
 6. Push the branch (`git push -u origin <branch>`).
 7. Open a non-draft PR with `gh pr create` and return the URL.
@@ -35,7 +35,7 @@ Always run this loop end-to-end — don't stop after pushing.
 9. **Resolve every outstanding comment** from Codex or reviewers — push fixup commits as needed — then mark each conversation thread as resolved.
 10. Re-run CI if any commits were pushed; confirm green.
 11. Once Codex is happy and CI is green, **merge the PR** (`gh pr merge --squash --delete-branch`) and **delete the remote branch**.
-12. Locally: `git switch main && git pull --ff-only && git branch -d <branch>` to sync `main` and clean up the local branch.
+12. Locally: `git switch main && git pull --ff-only origin main && git branch -d <branch>` to sync `main` and clean up the local branch.
 
 ## Operating Model
 
